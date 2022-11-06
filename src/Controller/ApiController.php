@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route(path:'/api')]
 class ApiController extends AbstractController
 {
-    #[Route('/get/{id}', name: 'api-get',  methods: ['GET'])]
+    #[Route('/show/{id}', name: 'api-show',  methods: ['GET'])]
     public function get(ManagerRegistry $doctrine, $id): JsonResponse
     {
         $repository = $doctrine->getRepository(Product::class);
