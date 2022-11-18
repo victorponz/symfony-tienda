@@ -63,4 +63,23 @@ class CartController extends AbstractController
         return new JsonResponse($data, Response::HTTP_OK);
         
     }
+    #[Route('/update/{id}/{quantity}', name: 'cart_update', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function cart_update(int $id, int $quantity = 1): Response
+    {
+        $product = $this->repository->find($id);
+        if (!$product)
+            return new JsonResponse("[]", Response::HTTP_NOT_FOUND);
+        
+        $this->cart->update($id, $quantity);
+        
+        $data = [
+            "id"=> $product->getId(),
+            "name" => $product->getName(),
+            "price" => $product->getPrice(),
+            "photo" => $product->getPhoto(),
+            "quantity" => $this->cart->getCart()[$product->getId()]
+            ];
+        return new JsonResponse($data, Response::HTTP_OK);
+        
+    }
 }

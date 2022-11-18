@@ -22,11 +22,22 @@
       event.preventDefault();
       let id = $( this ).attr('data-id');
       let href = `/cart/add/${id}`;
-      var jqxhr = $.get( href, function(data) {       
+      $.get( href, function(data) {       
         $( cartModal ).find( ".name" ).text(data.name);
-        $( cartModal ).find( "#quantity" ).text(data.quantity);
+        $( cartModal ).find( "#quantity" ).val(data.quantity);
         $( cartModal ).find( ".img-thumbnail" ).attr("src", "/img/" + data.photo);
-        cartModal.modal('show');     
+        cartModal.modal('show');
+        const updateButton = cartModal.find("#data-container .update")
+        updateButton.unbind();
+        updateButton.click(function(event){
+            event.preventDefault();
+            var hrefUpdate = "/cart/update/" + id; 
+            //Hacer un post a update con la cantidad introducida por el usuario
+            hrefUpdate += "/" + $( cartModal ).find( "#quantity" ).val();
+            $.post( hrefUpdate, {}, function(data) {
+                //No hacecemos nada con los datos
+            });
+        });
       })
     });
     $(".closeCart").click(function (e) {
