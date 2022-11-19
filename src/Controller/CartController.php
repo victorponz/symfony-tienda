@@ -23,6 +23,7 @@ class CartController extends AbstractController
         $this->repository = $doctrine->getRepository(Product::class);
         $this->cart = $cart;
     }
+
     #[Route('/', name: 'app_cart')]
     public function index(): Response
     {
@@ -58,7 +59,8 @@ class CartController extends AbstractController
             "name" => $product->getName(),
             "price" => $product->getPrice(),
             "photo" => $product->getPhoto(),
-            "quantity" => $this->cart->getCart()[$product->getId()]
+            "quantity" => $this->cart->getCart()[$product->getId()],
+            "totalItems" => $this->cart->totalItems()
             ];
         return new JsonResponse($data, Response::HTTP_OK);
         
@@ -77,9 +79,23 @@ class CartController extends AbstractController
             "name" => $product->getName(),
             "price" => $product->getPrice(),
             "photo" => $product->getPhoto(),
-            "quantity" => $this->cart->getCart()[$product->getId()]
+            "quantity" => $this->cart->getCart()[$product->getId()],
+            "totalItems" => $this->cart->totalItems()
             ];
         return new JsonResponse($data, Response::HTTP_OK);
         
+    }
+
+    #[Route('/delete/{id}', name: 'cart_delete')]
+    public function cart_delete(int $id): Response
+    {
+        $this->cart->delete($id);
+        $products = $this->repository->getFromCart($this->cart);
+        $totalCart = 0;
+        foreach($products as $product){
+            $totalCart += $this->cart->getCart()[$product->getId()] * $product->getPrice();
+        }
+        $data = ['total'=> $totalCart, 'totalItems' => $this->cart->totalItems()];
+        return new JsonResponse($data, Response::HTTP_OK);
     }
 }

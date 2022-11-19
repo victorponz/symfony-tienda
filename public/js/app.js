@@ -1,5 +1,6 @@
 //Immediately-Invoked Function Expression (IIFE)
 (function(){
+    const totalItems = $("#totalItems");
     const infoProduct = $("#infoProduct");
     $( "a.open-info-product" ).click(function(event) {
       event.preventDefault();
@@ -9,6 +10,7 @@
         $( infoProduct ).find( "#productName" ).text(data.name);
         $( infoProduct ).find( "#productPrice" ).text(data.price);
         $( infoProduct ).find( "#productImage" ).attr("src", "/img/" + data.photo);
+        console.log(data);
         infoProduct.modal('show');
       })
     });
@@ -26,6 +28,7 @@
         $( cartModal ).find( ".name" ).text(data.name);
         $( cartModal ).find( "#quantity" ).val(data.quantity);
         $( cartModal ).find( ".img-thumbnail" ).attr("src", "/img/" + data.photo);
+        totalItems.text(data.totalItems);
         cartModal.modal('show');
         const updateButton = cartModal.find("#data-container .update")
         updateButton.unbind();
@@ -35,7 +38,7 @@
             //Hacer un post a update con la cantidad introducida por el usuario
             hrefUpdate += "/" + $( cartModal ).find( "#quantity" ).val();
             $.post( hrefUpdate, {}, function(data) {
-                //No hacecemos nada con los datos
+                totalItems.text(data.totalItems);
             });
         });
       })
@@ -44,6 +47,16 @@
       cartModal.modal('hide');
     });
 
+    $( "a.remove-item" ).click(function(event) {
+      event.preventDefault();
+      let id = $( this ).attr('data-id');
+      let href = `/cart/delete/${id}`;
+      $.post( href, function(data) {
+        totalItems.text(data.totalItems);
+        $( "#totalCart" ).text(new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(data.total));  
+        //Ahora eliminanos el contenedor del producto
+        $(`#item-${id}`).hide('slow', function(){ $(`#item-${id}`).remove(); });
+      })
+    });
     
-
 })();
