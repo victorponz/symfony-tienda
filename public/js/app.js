@@ -4,13 +4,12 @@
     const infoProduct = $("#infoProduct");
     $( "a.open-info-product" ).click(function(event) {
       event.preventDefault();
-      let id = $( this ).attr('data-id');
-      let href = `/api/show/${id}`;
-      var jqxhr = $.get( href, function(data) {
+      const id = $( this ).attr('data-id');
+      const href = `/api/show/${id}`;
+      $.get( href, function(data) {
         $( infoProduct ).find( "#productName" ).text(data.name);
         $( infoProduct ).find( "#productPrice" ).text(data.price);
         $( infoProduct ).find( "#productImage" ).attr("src", "/img/" + data.photo);
-        console.log(data);
         infoProduct.modal('show');
       })
     });
@@ -22,8 +21,8 @@
    
     $( "a.open-cart-product" ).click(function(event) {
       event.preventDefault();
-      let id = $( this ).attr('data-id');
-      let href = `/cart/add/${id}`;
+      const id = $( this ).attr('data-id');
+      const href = `/cart/add/${id}`;
       $.get( href, function(data) {       
         $( cartModal ).find( ".name" ).text(data.name);
         $( cartModal ).find( "#quantity" ).val(data.quantity);
@@ -49,8 +48,8 @@
 
     $( "a.remove-item" ).click(function(event) {
       event.preventDefault();
-      let id = $( this ).attr('data-id');
-      let href = `/cart/delete/${id}`;
+      const id = $( this ).attr('data-id');
+      const href = `/cart/delete/${id}`;
       $.post( href, function(data) {
         totalItems.text(data.totalItems);
         $( "#totalCart" ).text(new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(data.total));  
